@@ -90,17 +90,29 @@
             function getCommand(node) {
                    return node.dataset ? node.dataset.editorCommand : node.getAttribute('data-editorCommand');
             }
+            function getRange() {
+                var range
+                try {
+                    range = document.createRange();
+                } catch(e) {
+                    range = document.selection.createRange();
+                }
+                return range;
+            }
             for(i=0;i<btn.length;i++) {
                 btn[i].addEventListener('click', function(e) {
-                    var command = getCommand(this);
-                    alert(command);
+                    var command = getCommand(this),
+                        range = getRange();
+                    range.execCommand(command)
                 })
             }
             for(j=0;j<drop.length;j++) {
                 drop[j].addEventListener('change', function(e) {
                     var selectedIndex = this.selectedIndex,
-                        option = this.options[selectedIndex];
-                    alert('command: '+getCommand(this)+'\ntext: '+option.text+'\nvalue: '+option.value);
+                        option = this.options[selectedIndex],
+                        range = getRange(),
+                        command = getCommand(this);
+                        range.execCommand(command,false,option.value);
                 })
             }
             //conver.value = content.innerHTML;
