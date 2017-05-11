@@ -1,2 +1,2 @@
 # myEditor
-myEditor
+rich editor~
