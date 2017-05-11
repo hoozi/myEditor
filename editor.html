@@ -10,7 +10,7 @@
             font:12px/1.5 '';
         }
         .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
-        .clearfix{overflow:auto;zoom:1;}
+        .clearfix{*zoom:1;}
         .editor {
             border:1px solid #d4d4d4;
             border-top-right-radius:4px;
@@ -43,6 +43,7 @@
         .eui-control {
             display:block;
             float:left;
+            -moz-user-select:none;
         }
         .eui-control--btn {
             padding:2px;
@@ -59,16 +60,16 @@
 <body>
     <div class="editor">
         <div class="editor__toolbar clearfix">
-            <a href="###" class="eui-control eui-control--btn" data-editor-command="bold" unselectable="on">加粗</a>
-            <a href="###" class="eui-control eui-control--btn" data-editor-command="italic" unselectable="on">斜体</a>
-            <a href="###" class="eui-control eui-control--btn" data-editor-command="underline" unselectable="on">下划线</a>
-            <select name="" id="" class="eui-control eui-control--drop" data-editor-command="fontname">
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="bold" onselectstart="return false;"  unselectable="on">加粗</a>
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="italic" onselectstart="return false;"  unselectable="on">斜体</a>
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="underline" onselectstart="return false;"  unselectable="on">下划线</a>
+            <select name="" id="" class="eui-control eui-control--drop" data-editor-command="formatblock">
                 <option value="">字号</option>
-                <option value="h1">一级标题</option>
-                <option value="h2">二级标题</option>
-                <option value="h3">三级标题</option>
-                <option value="h4">四级标题</option>
-                <option value="h5">五级标题</option>>
+                <option value="<h1>">一级标题</option>
+                <option value="<h2>">二级标题</option>
+                <option value="<h3>">三级标题</option>
+                <option value="<h4>">四级标题</option>
+                <option value="<h5>">五级标题</option>>
             </select>
         </div>
         <div class="editor__content" contenteditable="true">
@@ -88,14 +89,15 @@
             var drop = toolbar.querySelectorAll('.eui-control--drop');
             var i,j;
             function getCommand(node) {
-                   return node.dataset ? node.dataset.editorCommand : node.getAttribute('data-editorCommand');
+                   return node.dataset ? node.dataset.editorCommand : node.getAttribute('data-editor-command');
             }
             function getRange() {
                 var range
                 try {
-                    range = document.createRange();
-                } catch(e) {
                     range = document.selection.createRange();
+                } catch(e) {
+                    alert(1)
+                    range = document.createRange();
                 }
                 return range;
             }
@@ -103,6 +105,7 @@
                 btn[i].addEventListener('click', function(e) {
                     var command = getCommand(this),
                         range = getRange();
+                        console.log(range,command)
                     range.execCommand(command)
                 })
             }
@@ -112,6 +115,7 @@
                         option = this.options[selectedIndex],
                         range = getRange(),
                         command = getCommand(this);
+                        console.log(range,command,option.value)
                         range.execCommand(command,false,option.value);
                 })
             }
